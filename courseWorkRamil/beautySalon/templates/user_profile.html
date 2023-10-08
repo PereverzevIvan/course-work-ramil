@@ -61,7 +61,7 @@
                 <p class="common-text"><span class="bold_text">Роль:</span> Мастер </p>
                 <p class="common-text">
                     <span class="bold_text">Список специализаций:</span>
-                    {% all_specs master as all_specs %}
+                    {% get_all_specs master as all_specs %}
                     <ul style="list-style-position: inside; padding-left: 10px;">
                         {% for spec in all_specs %}
                             <li>
@@ -70,6 +70,14 @@
                         {% endfor %}
                     </ul>
                 </p>
+                <p class="common-text"><span>Рейтинг:</span> {% get_rating master %}</p>
+                {% if user.is_authenticated and user.id != master.user.id %}
+                <div class="button-box">
+                    {% csrf_token %}
+                    <button class="btn like-button">Поставить оценку "Хорошо"</button>
+                    <button class="btn dislike-button">Поставить оценку "Плохо"</button>
+                </div>
+                {% endif %}
             {% else %}
                 <p class="common-text"><span class="bold_text">Роль:</span> Пользователь </p>
             {% endif %}
@@ -78,4 +86,80 @@
             {% endif %}
         </div>
     </div>
+
+    <script>
+        const likeButton = document.querySelector('.like-button')
+        const dislikeButton = document.querySelector('.dislike-button')
+        const ratingValue = document.querySelector('.rating-value')
+
+        if ('{{ was_evaluated }}') {
+            if ('{{ was_evaluated.value }}' === '1') {
+                dislikeButton.style.display = 'none'
+                likeButton.innerText = 'Убрать оценку "Хорошо"'
+            }
+            else {
+                likeButton.style.display = 'none'
+                dislikeButton.innerText = 'Убрать оценку "Плохо"'
+            }
+        }
+
+        async function request(url, method, body) {
+            let headers = {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            }
+
+            if (method == 'post') {
+                const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value
+                headers['X-CSRFToken'] = csrf
+            }
+
+            let response = await fetch(url, {
+                method: method,
+                headers: headers,
+                body: body
+            })
+            
+            return data = await response.json()
+        }
+
+        async function setRating(action) {
+            data = await request(
+                url='{% url "beautySalon:set_rating" %}', 
+                method='post', 
+                body=JSON.stringify({
+                    'action': action, 
+                    'evaluating': '{{ user.id }}', 
+                    'evaluated': '{{ master.user.id }}'
+                })
+            )
+
+            if (data['message'] === 'like') {
+                dislikeButton.style.display = 'none'
+                likeButton.innerText = 'Убрать оценку "Хорошо"'
+                ratingValue.innerText =  String(Number(ratingValue.innerText) + 1)
+            } else if (data['message'] === 'dislike') {
+                likeButton.style.display = 'none'
+                dislikeButton.innerText = 'Убрать оценку "Плохо"'
+                ratingValue.innerHTML = String(Number(ratingValue.innerText) - 1)
+            } else if (data['message'] === 'like delete') {
+                dislikeButton.style.display = 'inline-block'
+                likeButton.style.display = 'inline-block'
+                likeButton.innerText = 'Поставить оценку "Хорошо"'
+                dislikeButton.innerText = 'Поставить оценку "Плохо"'
+                ratingValue.innerText = String(Number(ratingValue.innerText) - 1)
+            } else if (data['message'] === 'dislike delete') {
+                dislikeButton.style.display = 'inline-block'
+                likeButton.style.display = 'inline-block'
+                likeButton.innerText = 'Поставить оценку "Хорошо"'
+                dislikeButton.innerText = 'Поставить оценку "Плохо"'
+                ratingValue.innerText = String(Number(ratingValue.innerText) + 1)
+            }
+        }
+
+        if (likeButton && dislikeButton) {
+            likeButton.addEventListener('click', async () => {setRating('like')})
+            dislikeButton.addEventListener('click', async () => {setRating('dislike')})
+        }
+    </script>
 {% endblock content %}

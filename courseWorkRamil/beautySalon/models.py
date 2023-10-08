@@ -42,7 +42,7 @@ class Service(models.Model):
     specialization = models.ForeignKey(Specialization, null=False, blank=False, on_delete=models.PROTECT, verbose_name='Сепциализация')
 
     def __str__(self):
-        return f'"{self.name}"'
+        return f'{self.name}'
 
     class Meta:
         verbose_name = "Процедура"
