@@ -25,7 +25,7 @@ class Master(models.Model):
     specialization = models.ManyToManyField(Specialization, verbose_name='Специализации')
 
     def __str__(self):
-        return f'Мастер-{self.specialization.name}, {self.user.username}'
+        return f'Мастер {self.user.username}'
 
     class Meta:
         verbose_name = "Мастер"
