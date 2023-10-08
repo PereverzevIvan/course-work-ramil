@@ -21,9 +21,11 @@
                     <li class="menu__item">
                         <a class="menu__link" href="">Процедуры</a>
                     </li>
+                    {% if user.is_authenticated and user.is_superuser %}
                     <li class="menu__item">
                         <a class="menu__link" href="/admin">Админка</a>
                     </li>
+                    {% endif %}
                 </ul>
                 <ul class="menu header__user-info">
                     {% if not user.is_authenticated %}
@@ -35,7 +37,7 @@
                         </li>
                     {% else %}
                         <li class="menu__item">
-                            <a class="menu__link" href="">{{ user }}</a>
+                            <a class="menu__link" href="{% url 'beautySalon:user_profile' user.id %}">{{ user }}</a>
                         </li>
                     {% endif %}
                 </ul>

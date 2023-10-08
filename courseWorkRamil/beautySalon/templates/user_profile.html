@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block document_title %}{{ human.first_name }} {{ human.last_name }}{% endblock document_title %}
+
+{% block additional_styles %}
+<style>
+    .info {
+        border: 1px solid black;
+        gap: 10px;
+        padding: 5px;
+        max-height: 500px;
+    }
+
+    img {
+        width: 100%;
+        max-width: 30%;
+        height: 100px;
+        align-self: flex-start;
+        display: inline-block;
+        align-self: center;
+        object-fit: cover;
+    }
+
+    .btn {
+        padding: 5px 7px;
+        background-color: lightgray;
+        border: 1px solid black;
+    }
+</style>
+{% endblock additional_styles %}
+
+{% block content %}
+    {% load static %}
+
+    <h1>Профиль пользвателя {{ human.first_name }} {{ human.last_name }}</h1>
+    <div class="profile-container">
+        <div class="info wrapper">
+            <h2>Общая информация</h2>
+            <div class="list wrapper">
+                <p class="common-text">Имя пользователя: {{ human }}</p>
+                <p class="common-text">Имя: {{ human.first_name }}</p>
+                <p class="common-text">Фамилия: {{ human.last_name }}</p>
+                <p class="common-text">Контакт пользователя: {{ human.email }}</p>
+                {% if user.id == human.id %}
+                <a href="{% url 'users:logout' %}" class="btn">Выйти из профиля</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

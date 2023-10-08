@@ -23,10 +23,16 @@ class RegisterView(View):
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
             password = form.cleaned_data.get('password1')
             
-            user = authenticate(username=username, password=password)
+            user = authenticate(
+                username=username,
+                first_name=first_name, 
+                last_name=last_name, 
+                password=password)
             login(request, user)
-            return HttpResponsePermanentRedirect(reverse('mainApp:index'))
+            return HttpResponsePermanentRedirect(reverse('beautySalon:index'))
         else:
             return render(request, self.template_name, {'form': form})
