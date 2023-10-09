@@ -83,7 +83,7 @@ class Comment(models.Model):
     created_at = models.DateField(null=True, auto_now_add=True, verbose_name='Дата написания')
 
     def __str__(self):
-            return f'Комментарий к профилю мастера {self.master.name}'
+            return f'Комментарий к профилю мастера {self.master.user.first_name} {self.master.user.last_name}'
 
     class Meta:
         verbose_name = "Комментарий"
@@ -139,7 +139,6 @@ class MasterAdmin(admin.ModelAdmin):
         for spec in object.specialization.all():
             output += f'<li>{spec.name}</li>'
         output += '</ul>'
-        print(output)
         return mark_safe(output)
 
     def get_image(self, object):
@@ -180,7 +179,7 @@ class MasterRatingAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('id', 'author', 'master', 'created_at')
     list_display_links = ('id', 'author')
-    search_fields = ['author__username', 'master__username']
+    search_fields = ['author__username', 'master__user__username']
     readonly_fields = ['author', 'master', 'text', 'created_at']
     date_hierarchy = "created_at"
 

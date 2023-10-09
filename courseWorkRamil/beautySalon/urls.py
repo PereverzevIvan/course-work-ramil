@@ -13,7 +13,9 @@ urlpatterns = [
     path('make_appointment/<int:service_id>', views.make_appointment, name='make_appointment'),
     path('set_rating/', views.set_rating, name='set_rating'),
     path('articles/', views.show_all_articles, name='all_articles'),
-    path('one_article/<int:article_id>', views.show_one_article, name='one_article')
+    path('one_article/<int:article_id>', views.show_one_article, name='one_article'),
+    path('add_comment/<int:master_id>/', views.add_comment, name='add_comment'),
+    path('detele_comment/<int:comment_id>', views.delete_comment, name='delete_comment'),
 ]
 
 handler404 = 'beautySalon.views.error_404'

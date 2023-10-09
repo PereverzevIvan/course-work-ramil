@@ -94,3 +94,30 @@ def show_all_articles(request):
 def show_one_article(request, article_id):
     article = get_object_or_404(Article, pk=article_id)
     return render(request, 'one_article.html', {'article': article})
+
+
+def add_comment(request, master_id):
+    if request.method == 'POST':
+        user = request.user
+        if user.is_authenticated:
+            comment = Comment()
+            comment.master_id = master_id
+            comment.author_id = user.id
+            comment.text = request.POST.get('comment-text')
+            comment.save()
+            return HttpResponsePermanentRedirect(reverse('beautySalon:user_profile', kwargs={'user_id': Master.objects.get(id=master_id).user.id}))
+        else:
+            return render(request, 'error.html', {'error_title': 'Ошибка добавления', 
+                                                  'error_text': 'Не удалось добавить комментарий'})
+        
+
+def delete_comment(request, comment_id:int):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    master_id = comment.master.user.id
+    user = request.user
+
+    if user.is_authenticated and comment.author_id == user.id:
+        comment.delete()
+        return HttpResponsePermanentRedirect(reverse('beautySalon:user_profile', kwargs={'user_id': master_id}))
+    return render(request, 'error.html', {'error_title': 'Ошибка удаления', 
+                                                  'error_text': 'Вы не можете удалить комментарий другого человека'})
