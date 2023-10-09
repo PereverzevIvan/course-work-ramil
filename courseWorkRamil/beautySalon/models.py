@@ -21,7 +21,7 @@ class Specialization(models.Model):
 class Master(models.Model):
     ''' Модель для описания в базе данных таблицы с информацией о мастерах '''
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    image = models.ImageField(upload_to=f'images/masters/', verbose_name='Изображение')
+    image = models.ImageField(upload_to='images/masters/', verbose_name='Изображение')
     specialization = models.ManyToManyField(Specialization, verbose_name='Специализации')
 
     def __str__(self):
@@ -125,7 +125,7 @@ class SpecializationAdmin(admin.ModelAdmin):
 class MasterAdmin(admin.ModelAdmin):
     list_display = ('id', 'get_name', 'get_specs', 'get_image')
     list_display_links = ('id', 'get_name')
-    search_fields = ['user__username', 'specialization']
+    search_fields = ['user__username', 'user__first_name', 'user__last_name']
     filter_horizontal = ['specialization']
     list_filter = ['specialization']
 
