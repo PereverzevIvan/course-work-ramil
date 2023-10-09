@@ -85,3 +85,12 @@ def set_rating(request):
             new_rating.save()
 
         return JsonResponse({'message': message})
+    
+
+def show_all_articles(request):
+    news = list(Article.objects.all())[::-1]
+    return render(request, 'all_articles.html', {'news': news})
+
+def show_one_article(request, article_id):
+    article = get_object_or_404(Article, pk=article_id)
+    return render(request, 'one_article.html', {'article': article})

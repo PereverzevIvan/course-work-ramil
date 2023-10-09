@@ -21,6 +21,9 @@
                     <li class="menu__item">
                         <a class="menu__link" href="{% url 'beautySalon:all_services' %}">Процедуры</a>
                     </li>
+                    <li class="menu__item">
+                        <a class="menu__link" href="{% url 'beautySalon:all_articles' %}">Новости</a>
+                    </li>
                     {% if user.is_authenticated and user.is_superuser %}
                     <li class="menu__item">
                         <a class="menu__link" href="/admin">Админка</a>
