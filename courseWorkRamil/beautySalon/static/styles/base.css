@@ -120,7 +120,7 @@ body {
     margin: 30px auto 0;
 }
 
-input, textarea {
+input, textarea, select, option {
     font-size: 1.1rem;
     padding: 5px;
     min-width: 250px;

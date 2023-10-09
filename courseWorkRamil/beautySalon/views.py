@@ -1,6 +1,7 @@
 import json
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, HttpResponsePermanentRedirect
+from django.urls import reverse
 from .models import *
 from pprint import pprint
 
@@ -25,9 +26,32 @@ def show_all_services(request):
     services = Service.objects.all()
     return render(request, 'show_all_services.html', {'services': services})
 
-def show_one_service(request, service_id):
-    pass
-
+def make_appointment(request, service_id):
+    service = get_object_or_404(Service, pk=service_id)
+    context = {'service': service}
+    
+    if request.method == 'GET':
+        return render(request, 'make_appointment.html', {'service': service})
+    elif request.method == 'POST':
+        user = request.user
+        if user.is_authenticated:
+            data = request.POST
+            master_id = int(data['master'])
+            time_data = data['time']
+            date_data = data['date']
+            if Appointment.objects.filter(date=date_data, time=time_data, service_id=service.id).exists():
+                context['message'] = 'Данный временной слот занят. Пожалуйста, выберите другой.'
+            else:
+                appointment = Appointment(
+                    user_id=user.id,
+                    master_id=master_id,
+                    service_id=service.id,
+                    date=date_data,
+                    time=time_data
+                )
+                appointment.save()
+                context['message'] = 'Запись успешно оформлена.'
+        return render(request, 'make_appointment.html', context)
 
 def show_user_profile(request, user_id: int):
     user = get_object_or_404(User, pk=user_id)
@@ -36,7 +60,6 @@ def show_user_profile(request, user_id: int):
 
     if Master.objects.filter(user_id=user_id).exists():
         context['master'] = get_object_or_404(Master, user_id=user_id)
-        
     return render(request, 'user_profile.html', context=context)
 
 

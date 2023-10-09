@@ -42,11 +42,14 @@
     {% if services %}
         {% for service in services %}
             <div class="card wrapper">
-                <a style="text-decoration: underline;" href="{% url 'beautySalon:one_service' service.id %}" class="card__title">{{ service.name }}</a>
+                <p class="card__title">{{ service.name }}</p>
                 <p class="common-text common-text--size_big card__text"><span class="bold_text">Стоимость:</span> {{ service.price }} рублей</p>
                 <p class="common-text common-text--size_big card__text"><span class="bold_text">Проложительность:</span> {{ service.duration }} минут</p>
                 <p class="common-text card__text"><span class="bold_text">Относится к специализации:</span> {{ service.specialization.name }}</p>
                 <p class="common-text card__text"><span class="bold_text">Описание:</span> {{ service.description }}</p>
+                {% if user.is_authenticated %}
+                <a class="btn btn-link" href="{% url 'beautySalon:make_appointment' service.id %}">Оформить запись</a>
+                {% endif %}
             </div>
         {% endfor %}
     {% endif %}

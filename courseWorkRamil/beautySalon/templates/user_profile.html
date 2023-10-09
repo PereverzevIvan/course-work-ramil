@@ -13,12 +13,13 @@
         align-items: start;
     }
 
-    .info {
+    .info, .appointment-container {
         gap: 5px;
         padding: 10px;
         border: 1px solid black;
         max-width: 100%;
-        height: 100%
+        height: 100%;
+        overflow-y: scroll;
     }
 
     img {
@@ -58,6 +59,7 @@
             <p class="common-text"><span class="bold_text">Контакт пользователя:</span> {{ human.email }}</p>
 
             {% if master %}
+                {% get_score master user as score %}
                 <p class="common-text"><span class="bold_text">Роль:</span> Мастер </p>
                 <p class="common-text">
                     <span class="bold_text">Список специализаций:</span>
@@ -70,7 +72,7 @@
                         {% endfor %}
                     </ul>
                 </p>
-                <p class="common-text"><span>Рейтинг:</span> {% get_rating master %}</p>
+                <p class="common-text"><span class="bold_text">Рейтинг:</span> <span class="rating-value">{% get_rating master %}</span></p>
                 {% if user.is_authenticated and user.id != master.user.id %}
                 <div class="button-box">
                     {% csrf_token %}
@@ -85,6 +87,17 @@
                 <a href="{% url 'users:logout' %}" class="btn btn-link">Выйти из профиля</a>
             {% endif %}
         </div>
+        {% if user.id == human.id %}
+            {% get_appointments_for_user user as all_appointments %}
+            <div class="appointment-container wrapper">
+                <h2>Записи на прием</h2>
+                <ul style="list-style-position: inside;">
+                    {% for record in all_appointments %}
+                        <li class="common-text">Запись на процедуру "{{ record.service.name }}" на {{ record.date }} в {{ record.time }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
     </div>
 
     <script>
@@ -92,8 +105,8 @@
         const dislikeButton = document.querySelector('.dislike-button')
         const ratingValue = document.querySelector('.rating-value')
 
-        if ('{{ was_evaluated }}') {
-            if ('{{ was_evaluated.value }}' === '1') {
+        if ('{{ score }}' !== '0') {
+            if ('{{ score }}' === '1') {
                 dislikeButton.style.display = 'none'
                 likeButton.innerText = 'Убрать оценку "Хорошо"'
             }

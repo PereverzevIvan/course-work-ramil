@@ -25,7 +25,7 @@ class Master(models.Model):
     specialization = models.ManyToManyField(Specialization, verbose_name='Специализации')
 
     def __str__(self):
-        return f'Мастер {self.user.username}'
+        return f'{self.user.first_name} {self.user.last_name}'
 
     class Meta:
         verbose_name = "Мастер"
@@ -123,18 +123,31 @@ class SpecializationAdmin(admin.ModelAdmin):
 
 
 class MasterAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'get_image')
-    list_display_links = ('id', 'user')
+    list_display = ('id', 'get_name', 'get_specs', 'get_image')
+    list_display_links = ('id', 'get_name')
     search_fields = ['user__username', 'specialization']
     filter_horizontal = ['specialization']
     list_filter = ['specialization']
 
     inlines = [CommentInlines]
 
+    def get_name(self, object):
+        return f'{object.user.first_name} {object.user.last_name}'
+
+    def get_specs(self, object):
+        output = '<ul>'
+        for spec in object.specialization.all():
+            output += f'<li>{spec.name}</li>'
+        output += '</ul>'
+        print(output)
+        return mark_safe(output)
+
     def get_image(self, object):
         return mark_safe(f'<img src="/static/{object.image}" width=120>')
     
+    get_name.short_description = 'Пользователь'
     get_image.short_description = 'Изображение'
+    get_specs.short_description = 'Специализации'
 
 
 class ServiceAdmin(admin.ModelAdmin):
@@ -159,7 +172,7 @@ class MasterRatingAdmin(admin.ModelAdmin):
     list_filter = ['value']
 
     def get_info(self, object):
-        return f'Пользователь {object.evaluating.username} оценил пользователя {object.evaluated.username}'
+        return f'Пользователь {object.evaluating.first_name} {object.evaluating.last_name}  оценил пользователя {object.evaluated}'
     
     get_info.short_description = 'Информация'
 

@@ -29,8 +29,8 @@
         display: flex;
         gap: 10px;
     }
-    .card__text {
-        margin-top: 10px;
+    .card__desc {
+        gap: 5px;
     }
     .card__title {
         font-size: 1.5rem;
@@ -55,6 +55,7 @@
                 <div class="card__desc wrapper">
                     <a style="text-decoration: underline;" href="{% url 'beautySalon:one_master' master.user_id %}" class="card__title">{{master.user.first_name}} {{master.user.last_name}}</a>
                     {% get_all_specs master as all_specs %}
+                    <p class="common-text"><span class="bold_text">Рейтинг:</span> <span class="rating-value">{% get_rating master %}</span></p>
                     <p class="card__text"><span class="bold_text">Список специализаций:</span> 
                         <ul style="list-style-position: inside; padding-left: 10px;">
                             {% for spec in all_specs %}

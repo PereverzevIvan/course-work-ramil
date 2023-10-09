@@ -10,8 +10,7 @@ urlpatterns = [
     path('masters/', views.show_all_masters, name='all_masters'),
     path('services/', views.show_all_services, name='all_services'),
     path('one_master/<int:user_id>', views.show_user_profile, name='one_master'),
-    path('one_service/<int:service_id>', views.show_one_service, name='one_service'),
-    path('one_service/<int:service_id>', views.show_one_service, name='one_service'),
+    path('make_appointment/<int:service_id>', views.make_appointment, name='make_appointment'),
     path('set_rating/', views.set_rating, name='set_rating'),
 ]
 
