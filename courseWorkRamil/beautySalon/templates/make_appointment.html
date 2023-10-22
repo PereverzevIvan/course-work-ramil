@@ -39,7 +39,7 @@
     {% load static %}
     <h1>Регистрация на запись - {{ service.name }}</h1>
     {% get_time_for_service service as all_times %}
-    {% get_masters_for_service service as all_masters %}
+    {% get_masters_for_service service user as all_masters %}
     <p class="common-text common-text--size_big card__text"><span class="bold_text">Стоимость:</span> {{ service.price }} рублей</p>
                 <p class="common-text common-text--size_big card__text"><span class="bold_text">Проложительность:</span> {{ service.duration }} минут</p>
                 <p class="common-text card__text"><span class="bold_text">Относится к специализации:</span> {{ service.specialization.name }}</p>

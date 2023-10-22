@@ -12,6 +12,11 @@ def get_current_date():
 
 
 @register.simple_tag()
+def get_current_time():
+    return datetime.now().strftime("%H:%M:%S")
+
+
+@register.simple_tag()
 def get_all_specs(master):
     return master.specialization.all()
 
@@ -47,20 +52,27 @@ def get_time_for_service(service):
 
 
 @register.simple_tag()
-def get_masters_for_service(service):
+def get_masters_for_service(service, user):
     all_masters = Master.objects.all()
     need_masters = []
 
     for master in all_masters:
         if service.specialization in master.specialization.all():
-            need_masters.append(master)
+            if master.user.id != user.id:
+                need_masters.append(master)
 
     return need_masters
 
 
 @register.simple_tag()
 def get_appointments_for_user(user):
-    all_appointments = Appointment.objects.filter(user_id=user.id)
+    all_appointments = Appointment.objects.filter(user_id=user.id, status=False)
+    return all_appointments
+
+
+@register.simple_tag()
+def get_appointments_for_master(master):
+    all_appointments = Appointment.objects.filter(master_id=master.id, status=False)
     return all_appointments
 
 
@@ -68,3 +80,4 @@ def get_appointments_for_user(user):
 def get_comments_for_master(master):
     all_comments = Comment.objects.filter(master_id=master.id)
     return all_comments
+

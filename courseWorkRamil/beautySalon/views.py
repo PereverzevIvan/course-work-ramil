@@ -52,6 +52,20 @@ def make_appointment(request, service_id):
                 appointment.save()
                 context['message'] = 'Запись успешно оформлена.'
         return render(request, 'make_appointment.html', context)
+    
+
+def close_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    user = request.user
+
+    if user.is_authenticated:
+        if user.id == appointment.user.id or user.id == appointment.master.user.id:
+            appointment.status = True
+            appointment.save()
+            print(1)
+
+    return HttpResponsePermanentRedirect(reverse('beautySalon:user_profile', kwargs={'user_id': user.id}))
+
 
 def show_user_profile(request, user_id: int):
     user = get_object_or_404(User, pk=user_id)

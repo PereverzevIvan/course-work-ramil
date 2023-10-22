@@ -35,7 +35,6 @@
         padding: 5px 7px;
         background-color: lightgray;
         border: 1px solid black;
-        margin-top: 10px;
     }
 
     .bold_text {
@@ -61,6 +60,20 @@
     }
     .comment__author {
         font-weight: bold;
+    }
+
+    .appointment-list {
+        list-style-position: inside;
+        gap: 10px;
+    }
+
+    .appointment-list__item {
+        display: flex;
+        gap: 15px;
+        padding: 5px;
+        border: 1px solid black;
+        align-items: center;
+        justify-content: space-between;
     }
 </style>
 {% endblock additional_styles %}
@@ -148,14 +161,34 @@
                     {% endif %}
                 </div>
             </div>
+
+            {% get_appointments_for_master master as all_appointments %}
+            <div class="appointment-container wrapper">
+                <h2>Записи на прием к вам</h2>
+                <ul class="appointment-list wrapper">
+                    {% for record in all_appointments %}
+                    {% if not record.status %}
+                        <li class="appointment-list__item">
+                            <p class="common-text">{{ record.service.name }} на {{ record.date }} в {{ record.time }}</p>
+                            <a class="btn btn-link" href="{% url 'beautySalon:close_appointment' record.id %}">Закрыть</a>
+                        </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
         {% endif %}
         {% if user.id == human.id %}
             {% get_appointments_for_user user as all_appointments %}
             <div class="appointment-container wrapper">
-                <h2>Записи на прием</h2>
-                <ul style="list-style-position: inside;">
+                <h2>Ваши записи на прием</h2>
+                <ul class="appointment-list wrapper">
                     {% for record in all_appointments %}
-                        <li class="common-text">Запись на процедуру "{{ record.service.name }}" на {{ record.date }} в {{ record.time }}</li>
+                    {% if not record.status %}
+                        <li class="appointment-list__item">
+                            <p class="common-text">{{ record.service.name }} на {{ record.date }} в {{ record.time }}</p>
+                            <a class="btn btn-link" href="{% url 'beautySalon:close_appointment' record.id %}">Отказаться</a>
+                        </li>
+                    {% endif %}
                     {% endfor %}
                 </ul>
             </div>

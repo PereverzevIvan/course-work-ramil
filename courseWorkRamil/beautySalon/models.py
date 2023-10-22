@@ -55,6 +55,7 @@ class Appointment(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE, verbose_name='Процедура')
     date = models.DateField(null=False, auto_now=False, auto_now_add=False, verbose_name='Дата приема')
     time = models.TimeField(null=False, auto_now=False, auto_now_add=False, verbose_name="Время приема")
+    status = models.BooleanField(null=False, blank=False, default=False, verbose_name='Запись закрыта')
 
     def __str__(self):
             return f'Запись №{self.id} на {self.time} {self.date}'
@@ -157,7 +158,7 @@ class ServiceAdmin(admin.ModelAdmin):
 
 
 class AppointmentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'date', 'time', 'user', 'master', 'service')
+    list_display = ('id', 'date', 'time', 'user', 'master', 'service', 'status')
     list_display_links = ('id', 'date', 'time')
     list_filter = ['service']
     search_fields = ['user__username', 'master__username']
