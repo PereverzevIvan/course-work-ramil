@@ -154,15 +154,22 @@ class ServiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'duration', 'price', 'specialization')
     list_display_links = ('id', 'name')
     list_filter = ['specialization']
-    search_fields = ['name', 'specialization']
+    search_fields = ['name', 'specialization__name']
 
 
 class AppointmentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'date', 'time', 'user', 'master', 'service', 'status')
+    list_display = ('id', 'date', 'time', 'get_user_info', 'master', 'service', 'status')
     list_display_links = ('id', 'date', 'time')
     list_filter = ['service']
-    search_fields = ['user__username', 'master__username']
+    search_fields = ['user__username', 'user__first_name', 'user__last_name',
+                      'master__user__username', 'master__user__first_name', 'master__user__last_name']
     date_hierarchy = "date"
+
+
+    def get_user_info(self, object):
+        return f'{object.user.first_name} {object.user.last_name}'
+    
+    get_user_info.short_description = 'Пользователь'
 
 
 class MasterRatingAdmin(admin.ModelAdmin):
@@ -178,11 +185,17 @@ class MasterRatingAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'author', 'master', 'created_at')
-    list_display_links = ('id', 'author')
-    search_fields = ['author__username', 'master__user__username']
+    list_display = ('id', 'get_user_info', 'master', 'created_at')
+    list_display_links = ('id', 'get_user_info')
+    search_fields = ['author__username', 'author__first_name', 'author__last_name',
+                      'master__user__username', 'master__user__first_name', 'master__user__last_name']
     readonly_fields = ['author', 'master', 'text', 'created_at']
     date_hierarchy = "created_at"
+
+    def get_user_info(self, object):
+        return f'{object.author.first_name} {object.author.last_name}'
+    
+    get_user_info.short_description = 'Автор'
 
 
 class ArticleAdmin(admin.ModelAdmin):
