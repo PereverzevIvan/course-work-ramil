@@ -161,7 +161,7 @@
                     {% endif %}
                 </div>
             </div>
-
+            {% if master.user.id == user.id %}
             {% get_appointments_for_master master as all_appointments %}
             <div class="appointment-container wrapper">
                 <h2>Записи на прием к вам</h2>
@@ -176,6 +176,7 @@
                     {% endfor %}
                 </ul>
             </div>
+            {% endif %}
         {% endif %}
         {% if user.id == human.id %}
             {% get_appointments_for_user user as all_appointments %}
