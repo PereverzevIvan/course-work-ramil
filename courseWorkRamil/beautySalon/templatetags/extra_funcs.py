@@ -42,14 +42,11 @@ def get_time_for_service(service):
     duration = timedelta(hours=service.duration // 60, minutes=service.duration % 60)
     time_start = timedelta(hours=9, minutes=0, seconds=0)
     time_end = timedelta(hours=23, minutes=0, seconds=0)
-    time_now = datetime.now().time()
-    time_now = timedelta(hours=time_now.hour, minutes=time_now.minute, seconds=time_now.second)
 
     all_times = []
 
     while time_start + duration < time_end:
-        if (time_now < time_start):
-            all_times.append(time_start)
+        all_times.append(time_start)
         time_start += duration
 
     return all_times

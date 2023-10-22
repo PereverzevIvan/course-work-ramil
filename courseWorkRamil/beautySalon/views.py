@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404, HttpResponsePermanentRed
 from django.urls import reverse
 from .models import *
 from pprint import pprint
+from datetime import datetime
 
 # Create your views here.
 def index(request):
@@ -39,9 +40,15 @@ def make_appointment(request, service_id):
             master_id = int(data['master'])
             time_data = data['time']
             date_data = data['date']
-            if Appointment.objects.filter(date=date_data, time=time_data, service_id=service.id).exists():
+            date_data_datetime = datetime.strptime(date_data, '%Y-%m-%d').date()
+            time_data_datetime = datetime.strptime(time_data, '%H:%M:%S').time()
+
+            if Appointment.objects.filter(date=date_data, time=time_data, status=False, service_id=service.id).exists():
                 context['message'] = 'Данный временной слот занят. Пожалуйста, выберите другой.'
+            elif (datetime.now().date() == date_data_datetime) and (datetime.now().time() > time_data_datetime):
+                context['message'] = 'Данный временной слот просрочен. Пожалуйста, выберите другой.'
             else:
+
                 appointment = Appointment(
                     user_id=user.id,
                     master_id=master_id,
