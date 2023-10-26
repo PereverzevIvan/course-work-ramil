@@ -69,7 +69,6 @@ def close_appointment(request, appointment_id):
         if user.id == appointment.user.id or user.id == appointment.master.user.id:
             appointment.status = True
             appointment.save()
-            print(1)
 
     return HttpResponsePermanentRedirect(reverse('beautySalon:user_profile', kwargs={'user_id': user.id}))
 
